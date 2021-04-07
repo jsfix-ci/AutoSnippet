@@ -10,6 +10,7 @@ const USER_HOME 	= process.env.HOME || process.env.USERPROFILE;
 const SNIPPETS_PATH = USER_HOME + '/Library/Developer/Xcode/UserData/CodeSnippets';
 
 const create = require('./create.js');
+const cache = require('./cache.js');
 
 function shareCodeSnippets(specFile) {
 	try {
@@ -181,7 +182,7 @@ function createFromLocal(specFile, array, completion_more) {
 		'{completion}': '@' + array[0] + completion_more + '@Moudle',
 		'{summary}': array[4],
 		'{language}': array[3],
-		'{content}': array[1].split('+')
+		'{content}': array[1].split('\n')
 	};
 	create.saveFromFile(specFile, snippet);
 }
