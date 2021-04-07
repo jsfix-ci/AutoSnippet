@@ -114,7 +114,8 @@ commander
 	.description(pjson.description);
 
 commander
-	.command('init', 'initialize the workspace, use it in the root directory of the Xcode project')
+	.command('init')
+	.description('initialize the workspace, use it in the root directory of the Xcode project')
 	.action(() => {
 		init.initSpec().then(function () {
 			console.log('init success.');
@@ -122,7 +123,8 @@ commander
 	});
 
 commander
-	.command('i', 'add the shared Snippet to the Xcode environment')
+	.command('i')
+	.description('add the shared Snippet to the Xcode environment')
 	.action(() => {
 		findPath.findASSpecPath(CMD_PATH, function (specFile) {
 			install.addCodeSnippets(specFile);
@@ -130,7 +132,8 @@ commander
 	});
 
 commander
-	.command('c', 'create an Xcode Snippet, in the file directory marked with `// ACode` code')
+	.command('c')
+	.description('create an Xcode Snippet, in the file directory marked with `// ACode` code')
 	.action(() => {
 		findPath.findASSpecPath(CMD_PATH, function (specFile) {
 			askQuestions(specFile);
@@ -138,7 +141,8 @@ commander
 	});
 
 commander
-	.command('u <word> [key] [value]', 'modify the `// ACode` code corresponding to `word`')
+	.command('u <word> [key] [value]')
+	.description('modify the `// ACode` code corresponding to `word`')
 	.action((word, key, value) => {
 		findPath.findASSpecPath(CMD_PATH, function (specFile) {
 			create.updateCodeSnippets(specFile, word, key, value);
@@ -146,7 +150,8 @@ commander
 	});
 
 commander
-	.command('w', 'recognize that Snippet automatically injects dependency header files')
+	.command('w')
+	.description('recognize that Snippet automatically injects dependency header files')
 	.action(() => {
 		findPath.findASSpecPath(CMD_PATH, function (specFile) {
 			install.addCodeSnippets(specFile);

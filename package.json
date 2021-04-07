@@ -4,7 +4,7 @@
     "description": "基于Xcode模块管理工具",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "node bin/asnip.js init"
     },
     "author": "gaoxuefeng",
     "license": "MIT",
@@ -16,6 +16,11 @@
         "iOS",
         "Snippet"
     ],
+    "homepage": "https://github.com/ggsoul/AutoSnippet#readme",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ggsoul/AutoSnippet"
+    },
     "dependencies": {
         "commander": "^7.2.0",
         "inquirer": "^8.0.0",
