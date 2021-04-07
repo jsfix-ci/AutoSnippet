@@ -53,6 +53,14 @@ Use code Snippet like this:
 @view 
 ```
 
+### share
+
+Share local Snippet:
+
+```bash
+$ asd s
+```
+
 ### watch
 
 In modular projects, recognize that Snippet automatically injects dependency header files:
