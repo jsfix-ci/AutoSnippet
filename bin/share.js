@@ -159,12 +159,12 @@ function shareTheSnippet(specFile, filePath, answers) {
 					if (array[0] === '') {
 						askQuestionsForKey(specFile, function (completion_first) {
 							array[0] = completion_first;
-							createFromLocal(specFile, array, answers.completion_more);
+							createFromLocal(specFile, filedir, array, answers.completion_more);
 						});
 					} else if (array[0].endsWith('@Moudle')) {
 						console.log('这个文件已经是共享版本，不需要再处理。');
 					} else {
-						createFromLocal(specFile, array, answers.completion_more);
+						createFromLocal(specFile, filedir, array, answers.completion_more);
 					}
 				}
 			});
@@ -174,9 +174,9 @@ function shareTheSnippet(specFile, filePath, answers) {
 	}
 }
 
-function createFromLocal(specFile, array, completion_more) {
+function createFromLocal(specFile, filedir, array, completion_more) {
 	const snippet = {
-		'{identifier}': array[2],
+		'{identifier}': 'AutoSnip_' + array[2],
 		'{title}': array[5],
 		'{completionKey}': array[0],
 		'{completion}': '@' + array[0] + completion_more + '@Moudle',
@@ -185,6 +185,8 @@ function createFromLocal(specFile, array, completion_more) {
 		'{content}': array[1].split('\n')
 	};
 	create.saveFromFile(specFile, snippet);
+	// 删除旧文件
+	fs.unlink(filedir, (err, data) => {});
 }
 
 exports.shareCodeSnippets = shareCodeSnippets;
