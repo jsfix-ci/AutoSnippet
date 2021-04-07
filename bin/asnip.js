@@ -13,6 +13,7 @@ const install = require('./install.js');
 const create = require('./create.js');
 const watch = require('./watch.js');
 const cache = require('./cache.js');
+const share = require('./share.js');
 const init = require('./init.js');
 
 function askQuestions(specFile) {
@@ -128,6 +129,15 @@ commander
 	.action(() => {
 		findPath.findASSpecPath(CMD_PATH, function (specFile) {
 			install.addCodeSnippets(specFile);
+		});
+	});
+
+commander
+	.command('s')
+	.description('share local Xcode Snippet')
+	.action(() => {
+		findPath.findASSpecPath(CMD_PATH, function (specFile) {
+			share.shareCodeSnippets(specFile);
 		});
 	});
 

@@ -83,12 +83,12 @@ function createCodeSnippets(specFile, answers, updateSnippet) {
 
 	fs.readdir(filePath, function (err, files) {
 		if (err) {
-            console.log(err);
-            return;
-        }
+			console.log(err);
+			return;
+		}
 
-        files.forEach(function (filename) {
-           const filedir = path.join(filePath, filename);
+		files.forEach(function (filename) {
+			const filedir = path.join(filePath, filename);
 			try {
 				// 读取路径是否为文件
 				const stats = fs.lstatSync(filedir);
@@ -227,3 +227,4 @@ function escapeString(string) {
 
 exports.createCodeSnippets = createCodeSnippets;
 exports.updateCodeSnippets = updateCodeSnippets;
+exports.saveFromFile = saveFromFile;
