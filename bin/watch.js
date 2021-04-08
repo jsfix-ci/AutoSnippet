@@ -135,10 +135,14 @@ function openLink(specFile, inputWord) {
 		if (wellKey.length > 1 && wellKey[1] === alinkMark) {
 			cache.getLinkCache(specFile).then(function (linkCache) {
 				if (linkCache) {
-					const specSlashIndex = specFile.lastIndexOf('/');
-					const specFilePath = specFile.substring(0, specSlashIndex + 1);
 					const completionKey = wellKey[0].replace(atMark, '');
-					const link = specFilePath + decodeURI(linkCache[completionKey]);
+					let link = decodeURI(linkCache[completionKey]);
+
+					if (!link.startsWith('http')) {
+						const specSlashIndex = specFile.lastIndexOf('/');
+						const specFilePath = specFile.substring(0, specSlashIndex + 1);
+						link = specFilePath + link;
+					}
 
 					if (link) {
 						open(link, {app: {name: 'google chrome'}});
