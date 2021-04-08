@@ -48,7 +48,11 @@ function shareCodeSnippets(specFile) {
 			}
 		});
 
-		askQuestions(specFile, filenameList, filePath);
+		if (filenameList.length > 0) {
+			askQuestions(specFile, filenameList, filePath);
+		} else {
+			console.log('不存在本地Snippet。');
+		}
 	});
 }
 

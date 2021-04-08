@@ -118,20 +118,26 @@ function readStream(specFile, filePathArr, snippet, isHaveHeader) {
 	});
 
 	let canPush = false;
-	let codeArr = [];
+	let codeList = [];
+
+	let lineIndex = 0;
+	let positionList = [];
+
 	rl.on('line', function (line) {
+		lineIndex++;
 
 		if (canPush) {
-			codeArr.push(escapeString(line));
+			codeList.push(escapeString(line));
 		}
 		if (line.trim().toLowerCase() === '// acode') {
 			canPush = !canPush;
+			positionList.push(lineIndex - 1);
 		}
 	});
 
 	rl.on('close', function () {
-		if (codeArr.length > 1) {
-			codeArr.pop();
+		if (codeList.length > 1) {
+			codeList.pop();
 
 			if (filePath.endsWith('.swift')) {
 				snippet['{language}'] = 'Xcode.SourceCodeLanguage.Swift';
@@ -150,7 +156,7 @@ function readStream(specFile, filePathArr, snippet, isHaveHeader) {
 					const specPureName = specName.split('.')[0];
 
 					findPath.findSubHeaderPath(findFilePath, specPureName).then(function (headerPath) {
-						snippet['{content}'] = codeArr;
+						snippet['{content}'] = codeList;
 						snippet['{specName}'] = specPureName;
 						snippet['{headName}'] = fileName;
 
@@ -166,9 +172,11 @@ function readStream(specFile, filePathArr, snippet, isHaveHeader) {
 					});
 				});
 			} else {
-				snippet['{content}'] = codeArr;
+				snippet['{content}'] = codeList;
 				saveFromFile(specFile, snippet);
 			}
+			// 移除ACode标识
+			removeAcodeMark(filePath, positionList);
 		} else {
 			readStream(specFile, filePathArr, snippet, isHaveHeader);
 		}
@@ -216,6 +224,29 @@ function saveFromFile(specFile, snippet) {
 			cache.updateCache(specFile, content);
 			install.addCodeSnippets(specFile);
 		}
+	}
+}
+
+function removeAcodeMark(filePath, positionList) {
+	if (positionList.length === 0) {
+		return;
+	}
+	try {
+		const data = fs.readFileSync(filePath, 'utf8');
+		const lineArray = data.split('\n');
+
+		positionList = positionList.reverse();
+		for (let i = 0; i < positionList.length; i++) {
+			const position = positionList[i];
+
+			if (lineArray[position].trim().toLowerCase() === '// acode') {
+				lineArray.splice(position, 1);
+			}
+		}
+
+		fs.writeFileSync(filePath, lineArray.join('\n'), 'utf8');
+	} catch (err) {
+		console.error(err);
 	}
 }
 
