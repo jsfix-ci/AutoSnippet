@@ -14,10 +14,10 @@ const alinkMark = 'alink';
 const wellMark = '#';
 const atMark = '@';
 
-const headerReg = /\/\/ ahead <\w+\/\w+.h>/;
-const headerSwiftReg = /\/\/ ahead \w+/;
-const importReg = /\#import\s*<\w+\/\w+.h>/;
-const importSwiftReg = /import\s*\w+/;
+const headerReg = /^\/\/ ahead <\w+\/\w+.h>$/;
+const headerSwiftReg = /^\/\/ ahead \w+$/;
+const importReg = /^\#import\s*<\w+\/\w+.h>$/;
+const importSwiftReg = /^import\s*\w+$/;
 
 let timeoutLink = null;
 let timeoutHead = null;

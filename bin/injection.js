@@ -13,20 +13,20 @@ const importMark = '#import';
 const importSwiftMark = 'import';
 const headerMark = '// ahead ';
 
-const importReg = /\#import\s*<\w+\/\w+.h>/;
+const importReg = /^\#import\s*<\w+\/\w+.h>$/;
 
 function createHeader(headerLine) {
     const header = headerLine.split(headerMark)[1].trim();
     const headerArray = header.split('/');
-    const moudleName = headerArray[0].substr(1);
+    const moduleName = headerArray[0].substr(1);
     const headerName = headerArray[1].substr(0, headerArray[1].length - 1);
 
     return {
         name: header,
         specName: headerArray[0] + '/' + headerArray[0].substr(1) + '.h>',
-        moudleName: moudleName,
+        moduleName: moduleName,
         headerName: headerName,
-        moudleStrName: '"' + moudleName + '.h"',
+        moduleStrName: '"' + moduleName + '.h"',
         headerStrName: '"' + headerName + '"',
     };
 }
@@ -71,8 +71,8 @@ function handleHeaderLine(specFile, updateFile, headerLine, importArray, isSwift
 
 			const dotIndex = headPath.lastIndexOf('.');
 			const slashIndex = headPath.lastIndexOf('/');
-			const currMoudleName = headPath.substring(slashIndex + 1, dotIndex);
-			if (currMoudleName === header.moduleName) {
+			const currModuleName = headPath.substring(slashIndex + 1, dotIndex);
+			if (currModuleName === header.moduleName) {
 				handleModuleHeader(specFile, updateFile, header, importArray, false);
 			} else {
 				handleModuleHeader(specFile, updateFile, header, importArray, true);
@@ -84,7 +84,7 @@ function handleHeaderLine(specFile, updateFile, headerLine, importArray, isSwift
 // isOuter区分模块内部引用""格式和模块外部引用<>格式
 function handleModuleHeader(specFile, updateFile, header, importArray, isOuter) {
     const headName = isOuter ? header.name : header.headerStrName;
-	const moduleName = isOuter ? header.specName : header.moudleStrName;
+	const moduleName = isOuter ? header.specName : header.moduleStrName;
 
 	let isNeedFindPCH = true;
 
@@ -129,7 +129,7 @@ function handleModuleHeader(specFile, updateFile, header, importArray, isOuter) 
 								|| importHeader === header.headerStrName) {
 								isAddedHeader = true;
 							} else if (importHeader === header.specName
-								|| importHeader === header.moudleStrName) {
+								|| importHeader === header.moduleStrName) {
 								isAddedSpecHeader = true;
 							}
 						}
@@ -208,7 +208,7 @@ function removeMarkFromFile(updateFile, header, string) {
 }
 
 function addHeaderToFile(updateFile, header) {
-	readStream(updateFile, importMark + ' ' + header, importMark);
+	readStream(updateFile, importMark + ' ' + header.name, importMark);
 	checkDependency(updateFile, header.moduleName, '自动注入头文件完成。');
 }
 
@@ -247,7 +247,7 @@ function checkDependency(updateFile, moduleName, string) {
 	});
 }
 
-function readStream(filePath, header, currImportMark) {
+function readStream(filePath, headerName, currImportMark) {
 	const rl = readline.createInterface({
 		input: fs.createReadStream(filePath),
 		crlfDelay: Infinity
@@ -273,14 +273,14 @@ function readStream(filePath, header, currImportMark) {
 			const data = fs.readFileSync(filePath, 'utf8');
 			const lineArray = data.split('\n');
 
-			if (header) {
+			if (headerName) {
 				if (markCount !== 0) {
 					lineArray.splice(markCount, 1);
 					if (markCount < lineCount) {
 						lineCount = lineCount - 1;
 					}
 				}
-				lineArray.splice(lineCount, 0, header);
+				lineArray.splice(lineCount, 0, headerName);
 			} else {
 				if (markCount !== 0) {
 					lineArray.splice(markCount, 1);
